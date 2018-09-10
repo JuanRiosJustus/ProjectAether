@@ -69,6 +69,7 @@ namespace ProjectAether.src.contexts
             WebCrawler crawler = new WebCrawler();
             WebHostPolicy policy = new WebHostPolicy();
             WebProcessor processor = new WebProcessor(configuredSettings);
+            ThreadSleeper sleeper = new ThreadSleeper(5000);
             // init the queue if not already created, 
             if (sizeOfQueue() < 1) { initQueue(cache, currentUrl); }
 
@@ -115,6 +116,7 @@ namespace ProjectAether.src.contexts
                 
                 // try to set webpage for timeout on all threads
                 addOrUpdatePolicy(policy, currentWebpageHost);
+                sleeper.trySleeping();
             }
             secondaryDisplayQueue.Enqueue(utils.createSecondaryDisplayView(sharedSearchContext));
         }

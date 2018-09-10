@@ -83,29 +83,17 @@ namespace ProjectAether.src.web
             }
         }
 
-        public int score()
-        {
-            int val = searchTokens * searchPhrases;
-            if (val < 1) { return -1; }
-            val += (val > 0 && inboundUrls.Length > 100 ? -inboundUrls.Length : inboundUrls.Length);
-            val += (images > 20 ? -images : images);
-            return val;
-        }
-
         public override int GetHashCode() { return  url.GetSpecialHashCode(); }
         
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("Url[" + url + "] ");
-            sb.Append("Host[" + host + "] ");
-            sb.Append("Sample[" + sampleText + "] ");
-            sb.Append("Inbounds[");
-            for (int i = 0; i < inboundUrls.Length; i++)
-            {
-                sb.Append(" " + inboundUrls[i] + " ");
-            }
-            sb.Append("]");
+            sb.Append("Webpage ( ");
+            sb.Append("Matches( \"" + searchPhrases + "/" + searchTokens + "\" ) ");
+            sb.Append("Host( \"" + host + "\" ) ");
+            sb.Append("Url( \"" + url + "\" ) ");
+            sb.Append("Sample( \"" + sampleText + "\" ) ");
+            sb.Append(" )");
             return sb.ToString();
         }
 

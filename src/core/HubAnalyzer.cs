@@ -29,10 +29,25 @@ namespace IntoTheAether.src.core
                 builder.Append(basicAnalysis(pages));
                 builder.Append(ApplicationConstants.GREATER_DIVIDER + "\r\n");
                 StreamWriter sw = new StreamWriter("AetherReport.txt", false);
-                sw.WriteLine(builder.ToString());
+                sw.WriteLine(builder.ToString() + PrettyPrintFromSort(pages));
                 sw.Flush();
                 sw.Close();
             }
+        }
+        private string PrettyPrintFromSort(WebPage[] pages)
+        {
+            List<WebPage> sortedPages = new List<WebPage>();
+            for (int i = 0; i < pages.Length; i++) { sortedPages.Add(pages[i]); }
+            sortedPages.Sort();
+            StringBuilder sb = new StringBuilder();
+            WebUtils utils = new WebUtils();
+            for (int i = sortedPages.Count - 1; i > -1; i--)
+            {
+                if (sortedPages[i].getSearchPhraseCount() < 1) { break; }
+                sb.Append(utils.constructMockShortenedSample(sortedPages[i]).ToString() + "\r\n");
+                sb.Append(ApplicationConstants.LESSER_DIVIDER + "\r\n");
+            }
+            return sb.ToString();
         }
         // Ensure to find the max length of a given number
         private void ensureEnoughSpacing(int num)
@@ -91,29 +106,32 @@ namespace IntoTheAether.src.core
             int mostSearchPhraseMatches = 0;
             int mostSearchTokenMatches = 0;
             int mostImages = 0;
-            List<WebPage> sortedPages = new List<WebPage>();
 
             for (int i = 0; i < pages.Length; i++)
             {
                 WebPage current = pages[i];
-                sortedPages.Add(current);
                 // check for the page with the most links
                 if (current.getInboundUrls().Length > pages[mostLinks].getInboundUrls().Length) { mostLinks = i; }
                 // check for the most search phases found
                 if (current.getSearchPhraseCount() > pages[mostSearchPhraseMatches].getSearchPhraseCount()) { mostSearchPhraseMatches = i; }
                 // check with has most search term matches
-                if (current.getSearchTokensCount() > pages[mostSearchTokenMatches].getSearchTokensCount()) { mostSearchTokenMatches = i; }
+                if (current.getSearchTokensCount() > pages[mostSearchTokenMatches].getSearchTokensCount() && current.getSearchPhraseCount() < 1)
+                {
+                    mostSearchTokenMatches = i;
+                }
                 // check for most images
                 if (current.getImageCount() > pages[mostImages].getImageCount()) { mostImages = i; }
             }
-            sortedPages.Sort();
 
             StringBuilder sb = new StringBuilder();
             sb.Append("Most relevant webpage is " + pages[mostSearchPhraseMatches].getUrl() + "\r\n");
             sb.Append(ApplicationConstants.LESSER_DIVIDER + "\r\n");
+            sb.Append("Potentially relevant webpage " + pages[mostSearchTokenMatches].getUrl() + "\r\n");
+            sb.Append(ApplicationConstants.LESSER_DIVIDER + "\r\n");
             sb.Append("Webpage with most links found at  " + pages[mostLinks].getUrl() + "\r\n");
             sb.Append(ApplicationConstants.LESSER_DIVIDER + "\r\n");
             sb.Append("Webpage with most images is " + pages[mostImages].getUrl() + "\r\n");
+
             return sb.ToString();
         }
         /// <summary>

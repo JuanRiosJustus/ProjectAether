@@ -89,6 +89,19 @@ namespace ProjectAether.src.web
             mockpage.setWordCount(page.getWordCount());
             return mockpage;
         }
+        public WebPage constructMockShortenedSample(WebPage page)
+        {
+            WebPage mockpage = new WebPage();
+            mockpage.setUrl(page.getUrl());
+            mockpage.setSampleText(page.getSampleText().Truncate(true, MAX_SHOWABLE_CHARS * 5));
+            mockpage.setSearchPhraseCount(page.getSearchPhraseCount());
+            mockpage.setSearchTokensCount(page.getSearchTokensCount());
+            mockpage.setInboundUrls(page.getInboundUrls());
+            mockpage.setHost(page.getHost());
+            mockpage.setImageCount(page.getImageCount());
+            mockpage.setWordCount(page.getWordCount());
+            return mockpage;
+        }
         /// <summary>
         /// Constructs a new instance of a website given the url, occurrences and sample
         /// </summary>
